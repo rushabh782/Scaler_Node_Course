@@ -1,11 +1,21 @@
 const express = require("express"); //imported express package
 
+const morgan = require("morgan");
+const myMiddleWareFunction = require("./middlewares/middle");
 const app = express();
 
 //get , post, put, delete
 
 app.use(express.json());
 
+app.use(myMiddleWareFunction);
+
+app.use(function (req, res, next) {
+  console.log("I am second middlewares");
+  next();
+});
+
+app.use(morgan);
 const courses = [
   { id: 1, name: "Javascript" },
   { id: 2, name: "Java" },
