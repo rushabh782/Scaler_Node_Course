@@ -52,7 +52,11 @@ async function createCourse() {
     const result = await course.save();
     console.log(result);
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
+    //error validator
+    for (field in error.errors) {
+      console.log(error.errors[field]);
+    }
   }
 } //Creating
 
