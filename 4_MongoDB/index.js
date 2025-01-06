@@ -7,11 +7,21 @@ mongoose
 
 //Schema
 const courseSchema = new mongoose.Schema({
-  name: String,
-  creator: String,
+  name: { type: String, required: true, minLength: 5, maxLength: 200 },
+  category: {
+    type: String,
+    required: true,
+    enum: ["DSA", "Web", "Mobile", "Data Science"],
+  },
+  creator: { type: String, required: true },
   publishedDate: { type: Date, default: Date.now },
-  isPublished: Boolean,
-  rating: Number,
+  isPublished: { type: String, required: true },
+  rating: {
+    type: Number,
+    required: function () {
+      return this.isPublished;
+    },
+  },
 });
 
 //creating model
@@ -19,17 +29,23 @@ const Course = mongoose.model("Course", courseSchema);
 
 async function createCourse() {
   const course = new Course({
-    name: "C++",
-    creator: "Raj",
-    rating: 3.0,
+    name: "MongoDB",
+    category: "Mobile",
+    creator: "Adam",
     isPublished: true,
+    rating: 4.7,
   });
 
-  const result = await course.save();
-  console.log(result);
+  try {
+    // await course.validate();
+    const result = await course.save();
+    console.log(result);
+  } catch (error) {
+    console.error(error.message);
+  }
 } //Creating
 
-// createCourse();
+createCourse();
 
 //Comparision Query Operators
 //eq (equal)
@@ -81,4 +97,4 @@ async function deleteCourse(id) {
   console.log(course);
 }
 
-deleteCourse("6778d55623ee080c7a1419f5");
+// deleteCourse("6778d55623ee080c7a1419f5");
