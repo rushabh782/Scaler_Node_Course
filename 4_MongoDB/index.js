@@ -8,6 +8,16 @@ mongoose
 //Schema
 const courseSchema = new mongoose.Schema({
   name: { type: String, required: true, minLength: 5, maxLength: 200 },
+
+  tags: {
+    type: Array,
+    validate: {
+      validator: function (tags) {
+        return tags.length > 1;
+      },
+    },
+  },
+
   category: {
     type: String,
     required: true,
@@ -30,6 +40,7 @@ const Course = mongoose.model("Course", courseSchema);
 async function createCourse() {
   const course = new Course({
     name: "MongoDB",
+    tags: ["express", "mongodb"],
     category: "Mobile",
     creator: "Adam",
     isPublished: true,
