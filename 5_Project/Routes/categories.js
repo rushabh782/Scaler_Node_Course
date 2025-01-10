@@ -1,8 +1,6 @@
 const express = require("express"); //import express
-
 const mongoose = require("mongoose"); //importing mongoose
 const Joi = require("joi"); //used for validation
-
 const router = express.Router();
 
 const categorySchema = new mongoose.Schema({
@@ -14,13 +12,13 @@ const Category = new mongoose.model("Category", categorySchema);
 
 //Route Parameters
 
-router.get("/api/categories", async (re, res) => {
+router.get("/", async (re, res) => {
   let categories = await Category.find();
   res.send(categories);
 });
 
 //to add new existing courses
-router.post("/api/categories", async (req, res) => {
+router.post("/", async (req, res) => {
   const { error } = validateData(req.body);
   if (error) res.status(400).send(error.details[0].message);
   const category = new Category({
@@ -31,7 +29,7 @@ router.post("/api/categories", async (req, res) => {
 });
 
 // //to update the existing categories
-router.put("/api/categories/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { error } = validateData(req.body);
   if (error) res.status(400).send(error.details[0].message);
 
@@ -46,7 +44,7 @@ router.put("/api/categories/:id", async (req, res) => {
 });
 
 // to delete categories
-router.delete("/api/categories/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const category = await Category.findByIdAndDelete(req.params.id);
 
   if (!category)
@@ -56,7 +54,7 @@ router.delete("/api/categories/:id", async (req, res) => {
 });
 
 // to view existing courses
-router.get("/api/categories/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   const category = Category.findById(req.params.id);
 
   if (!category)
