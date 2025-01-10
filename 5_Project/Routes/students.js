@@ -1,26 +1,6 @@
 const express = require("express"); //import express
-const mongoose = require("mongoose"); //importing mongoose
-const Joi = require("joi"); //used for validation
+const { Student, validate } = require("../models/studentsModel");
 const router = express.Router();
-
-const studentSchema = new mongoose.Schema({
-  name: { type: String, required: true, minLength: 3, maxLength: 30 },
-
-  isEnrolled: {
-    type: Boolean,
-    default: false,
-  },
-
-  Phone: {
-    type: String,
-    required: true,
-    minLength: 10,
-    maxLength: 25,
-  },
-});
-
-//Creating Category Model
-const Student = new mongoose.model("Student", studentSchema);
 
 //Route Parameters
 
@@ -31,7 +11,7 @@ router.get("/", async (re, res) => {
 
 //to add new existing courses
 router.post("/", async (req, res) => {
-  const { error } = validateData(req.body);
+  const { error } = validate(req.body);
   if (error) res.status(400).send(error.details[0].message);
   const student = new Student({
     name: req.body.name,
@@ -44,7 +24,7 @@ router.post("/", async (req, res) => {
 
 // //to update the existing categories
 router.put("/:id", async (req, res) => {
-  const { error } = validateData(req.body);
+  const { error } = validate(req.body);
   if (error) res.status(400).send(error.details[0].message);
 
   const student = await Student.findByIdAndUpdate(
@@ -79,14 +59,5 @@ router.get("/:id", (req, res) => {
     return res.status(404).send("The student with the given id was not found");
   res.send(student);
 });
-
-function validateData(student) {
-  const schema = {
-    name: Joi.string().min(3).max(50).required(),
-    Phone: Joi.string().min(10).max(50).required(),
-    isEnrolled: Joi.boolean(),
-  };
-  return Joi.validate(student, schema);
-}
 
 module.exports = router;
